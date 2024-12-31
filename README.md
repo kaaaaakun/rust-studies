@@ -1,3 +1,5 @@
+https://play.rust-lang.org/
+
 2024/12/30
 勉強方針
 - rust入門読む
