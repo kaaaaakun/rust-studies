@@ -1,5 +1,10 @@
-https://play.rust-lang.org/
+簡単な実行環境：https://play.rust-lang.org/
 
+|用語|解説|
+|---|---|
+|||
+
+--- 
 2024/12/30
 勉強方針
 - rust入門読む
