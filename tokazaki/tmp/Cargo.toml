@@ -1,0 +1,11 @@
+[package]
+name = "tmp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ctrlc = "3.4.1"
+
+[[bin]]
+name = "tmp"
+path = "main.rs"
