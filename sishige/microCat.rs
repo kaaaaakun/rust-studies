@@ -4,22 +4,21 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-
 fn do_cat(path: String) {
-	println!("{}", &path);
+    println!("{}", &path);
 }
 
 fn main() {
-	let argv: Vec<String> = env::args().collect();
-	let argc = argv.len();
+    let argv: Vec<String> = env::args().collect();
+    let argc = argv.len();
 
-	if argc < 2 {
-		return;
-	}
+    if argc < 2 {
+        return;
+    }
 
-	for i in 1..argc {
-		do_cat(argv[i].clone());
-	}
+    for i in 1..argc {
+        do_cat(argv[i].clone());
+    }
 }
 
 fn main() {
@@ -49,4 +48,3 @@ fn main() {
     // `file` goes out of scope, and the "hello.txt" file gets closed
     // `file`がスコープから抜け、"hello.txt"が閉じられる。
 }
-
