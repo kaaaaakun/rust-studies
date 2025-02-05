@@ -1,0 +1,10 @@
+[package]
+name = "ping"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ctrlc = "3.4.1"
+socket2 = "0.4"  # 最新バージョンを確認して指定してください
+libc = "0.2"     # 最新バージョンを確認して指定してください
+icmp = "0.1"     # 最新バージョンを確認して指定してください
