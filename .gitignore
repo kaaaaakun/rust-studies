@@ -1,0 +1,31 @@
+# コンパイル生成物
+/target
+/debug
+/release
+
+# Cargo 関連
+Cargo.lock
+.cargo/
+
+# 開発環境
+.DS_Store       # macOS
+.idea/          # IntelliJ IDEA
+.vscode/        # VS Code
+
+# テスト結果
+/test-results
+
+# ログファイル
+*.log
+
+# バックアップファイル
+*~
+# 編集中のファイル
+.#*
+
+# 環境ファイル
+.env
+
+# その他
+/build
+/out
