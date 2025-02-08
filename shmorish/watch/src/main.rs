@@ -2,20 +2,14 @@ use std::io;
 use clap::{Parser, CommandFactory};
 use std::process::exit;
 
-mod args;
-use crate::args::Args;
-
-mod firstline;
-use crate::firstline::print_first_line;
-
-mod output;
-use crate::output::process_output;
+mod utils;
+use utils::args::Args;
+use utils::firstline::print_first_line;
+use utils::output::{process_output, remove_tmp_file};
 
 const DEFAULT_INTERVAL: f64 = 2.0;
 const BEEP_SOUND: &str = "\x07";
 const CLEAR_SCREEN: &str = "\x1B[2J\x1B[1;1H";
-const CURRENT_RESULT_FILE: &str = "/tmp/.watch_stdout_current";
-const FIRST_RESULT_FILE: &str = "/tmp/.watch_stdout";
 
 fn handle_exit_status(exit_status: i32) {
     let args = Args::parse();
@@ -57,15 +51,6 @@ fn execute_command_loop(command: String) {
         handle_exit_status(exit_status);
 
         std::thread::sleep(std::time::Duration::from_secs_f64(interval));
-    }
-}
-
-fn remove_tmp_file() {
-    if std::fs::metadata(CURRENT_RESULT_FILE).is_ok() {
-        std::fs::remove_file(CURRENT_RESULT_FILE).expect("Failed to remove file");
-    }
-    if std::fs::metadata(FIRST_RESULT_FILE).is_ok() {
-        std::fs::remove_file(FIRST_RESULT_FILE).expect("Failed to remove file");
     }
 }
 

@@ -1,13 +1,12 @@
 use std::io::Write;
 use diff::lines;
 
-const CURRENT_RESULT_FILE: &str = "/tmp/.watch_stdout_current";
 const FIRST_RESULT_FILE: &str = "/tmp/.watch_stdout";
+const CURRENT_RESULT_FILE: &str = "/tmp/.watch_stdout_current";
 
 const RED: &str = "\x1b[31m";
 const GREEN: &str = "\x1b[32m";
 const RESET: &str = "\x1b[0m";
-
 
 pub fn process_output(output: &std::process::Output) {
     if !output.stdout.is_empty() {
@@ -21,6 +20,10 @@ pub fn process_output(output: &std::process::Output) {
         let stdout_str = String::from_utf8_lossy(&output.stdout);
         print!("{}", stdout_str);
         write_output_file(FIRST_RESULT_FILE, &output.stdout);
+    }
+    if !output.stderr.is_empty() {
+        let stderr_str = String::from_utf8_lossy(&output.stderr);
+        eprint!("{}", stderr_str);
     }
 }
 
@@ -36,5 +39,14 @@ fn print_diff(previous: &str, current: &str) {
             diff::Result::Right(r) => println!("{}{}{}", GREEN, r, RESET),
             diff::Result::Both(b, _) => println!("{}", b),
         }
+    }
+}
+
+pub fn remove_tmp_file() {
+    if std::fs::metadata(CURRENT_RESULT_FILE).is_ok() {
+        std::fs::remove_file(CURRENT_RESULT_FILE).expect("Failed to remove file");
+    }
+    if std::fs::metadata(FIRST_RESULT_FILE).is_ok() {
+        std::fs::remove_file(FIRST_RESULT_FILE).expect("Failed to remove file");
     }
 }
