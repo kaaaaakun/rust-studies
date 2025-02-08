@@ -1,7 +1,6 @@
-use std::{io, io::Write};
+use std::io;
 use clap::{Parser, CommandFactory};
 use std::process::exit;
-use diff::lines;
 
 mod args;
 use crate::args::Args;
@@ -9,17 +8,14 @@ use crate::args::Args;
 mod firstline;
 use crate::firstline::print_first_line;
 
-const DEFAULT_INTERVAL: f64 = 2.0;
+mod output;
+use crate::output::process_output;
 
+const DEFAULT_INTERVAL: f64 = 2.0;
 const BEEP_SOUND: &str = "\x07";
 const CLEAR_SCREEN: &str = "\x1B[2J\x1B[1;1H";
-
 const CURRENT_RESULT_FILE: &str = "/tmp/.watch_stdout_current";
 const FIRST_RESULT_FILE: &str = "/tmp/.watch_stdout";
-
-const RED: &str = "\x1b[31m";
-const GREEN: &str = "\x1b[32m";
-const RESET: &str = "\x1b[0m";
 
 fn handle_exit_status(exit_status: i32) {
     let args = Args::parse();
@@ -55,29 +51,7 @@ fn execute_command_loop(command: String) {
         }
 
         let output = execute_command(command.clone());
-
-        if !output.stdout.is_empty() {
-            let mut file = std::fs::File::create(CURRENT_RESULT_FILE).expect("Failed to create file");
-            file.write_all(&output.stdout).expect("Failed to write file");
-        }
-
-        if std::fs::metadata(FIRST_RESULT_FILE).is_ok() {
-            let previous_output = std::fs::read_to_string(FIRST_RESULT_FILE).unwrap_or_default();
-            let current_output = std::fs::read_to_string(CURRENT_RESULT_FILE).unwrap_or_default();
-            for diff in lines(&previous_output, &current_output) {
-                match diff {
-                    diff::Result::Left(l) => println!("{}{}{}", RED, l, RESET),
-                    diff::Result::Right(r) => println!("{}{}{}", GREEN, r, RESET),
-                    diff::Result::Both(b, _) => println!("{}", b),
-                }
-            }
-        } else {
-            let stdout_str = String::from_utf8_lossy(&output.stdout);
-            print!("{}", stdout_str);
-            let mut file = std::fs::File::create(FIRST_RESULT_FILE).expect("Failed to create file");
-            file.write_all(&output.stdout).expect("Failed to write file");
-        }
-
+        process_output(&output);
 
         let exit_status = output.status.code().unwrap_or(0);
         handle_exit_status(exit_status);
